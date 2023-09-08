@@ -23,14 +23,14 @@ class SymptomsActivity : ComponentActivity() {
     private lateinit var sharedPreferences: SharedPreferences
     val listOfSymptoms = arrayOf("Nausea","Headache","Diarrhea","Soar Throat","Fever",
         "Muscle Ache","Loss of smell or taste","Cough","Shortness of Breath","Feeling Tired")
-    //private lateinit var medicalDataViewModal: MedicalDataViewModal
+    private lateinit var medicalDataViewModal: HealthDataViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_symptoms)
         dropdown = findViewById(R.id.spinner)
         starRating = findViewById(R.id.ratingBar)
         sharedPreferences = getSharedPreferences("SymptomsRatings", Context.MODE_PRIVATE)
-        //medicalDataViewModal = ViewModelProvider(this).get(MedicalDataViewModal::class.java)
+        medicalDataViewModal = ViewModelProvider(this).get(HealthDataViewModel::class.java)
 
         // Create 10 options and add them to the list
         val size=listOfSymptoms.size-1

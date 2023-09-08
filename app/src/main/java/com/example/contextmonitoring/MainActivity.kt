@@ -33,7 +33,13 @@ import kotlin.math.sqrt
 
 class MainActivity : ComponentActivity() {
     lateinit var heartRateVal: MutableLiveData<String>
+    init {
+        heartRateVal = MutableLiveData()
+        heartRateVal.value = ".."
+    }
+    private lateinit var medicalDataViewModal: HealthDataViewModel
     private var accelerometerValue:Float=0.0f
+    private var heartRateValue:String=""
     private val openDocumentLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
@@ -48,8 +54,23 @@ class MainActivity : ComponentActivity() {
             }
         }
     override fun onCreate(savedInstanceState: Bundle?) {
+        val intent = intent // Get the Intent passed to this activity
+        if (intent != null && intent.hasExtra("options")) {
+            val optionsList = intent.getSerializableExtra("options") as ArrayList<Float>
+            Log.d("Options-Ratings",optionsList.toString())
+            Log.d("Heart Measure: ", heartRateValue)
+            Log.d("Heart Val:", heartRateVal.value.toString())
+//           Save data to DB upon pressing Upload from Dropdown screen
+            medicalDataViewModal = ViewModelProvider(this).get(HealthDataViewModel::class.java)
+            val newEntry = HealthData(0, optionsList[0], optionsList[1],optionsList[2],optionsList[3],optionsList[4],
+                optionsList[5],optionsList[6],optionsList[7],optionsList[8],optionsList[9],heartRateValue,accelerometerValue)
+            medicalDataViewModal.insert(newEntry)
+
+            Toast.makeText(this, "saved successfully", Toast.LENGTH_SHORT).show()
+        } else {
+
+        }
         super.onCreate(savedInstanceState)
-        heartRateVal = MutableLiveData("...");
         heartRateVal.observe(this) { result ->
             var tvBloodRate = findViewById<TextView>(R.id.textView)
             tvBloodRate.text = "Heart Rate is : $result"
@@ -124,7 +145,7 @@ class MainActivity : ComponentActivity() {
                     ?: 0
             var aduration = duration!!.toInt()
             var i = 10
-            while (i < 100) {
+            while (i < aduration) {
                 val bitmap = retriever.getFrameAtIndex(i)
                 frameList.add(bitmap!!)
                 i += 5
@@ -170,6 +191,7 @@ class MainActivity : ComponentActivity() {
             var rate = ((count.toFloat() / 45) * 60).toInt()
             val temp = (rate / 2).toString();
             Log.d("Answer:", temp)
+            heartRateValue=temp
             return temp.toString()
 
         }

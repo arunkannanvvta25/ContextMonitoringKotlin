@@ -10,22 +10,26 @@
 
     <Button
         android:id="@+id/heart"
-        android:layout_width="wrap_content"
+        android:layout_width="304dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="184dp"
-        android:background="#FAF6F6"
+        android:layout_marginTop="188dp"
+        android:background="#037C59"
+        android:padding="15dp"
         android:text="Measure Heart Rate"
-        android:textColor="#2B0808"
+        android:textColor="#F6F6F6"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.453"
+        app:layout_constraintHorizontal_bias="0.488"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/resp"
-        android:layout_width="wrap_content"
+        android:layout_width="304dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="296dp"
+        android:background="#037C59"
+        android:padding="15dp"
+        android:textColor="#F6F6F6"
         android:text="Measure Respiratory Rate"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.429"
@@ -34,9 +38,12 @@
 
     <Button
         android:id="@+id/symptoms"
-        android:layout_width="wrap_content"
+        android:layout_width="304dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="380dp"
+        android:background="#037C59"
+        android:padding="15dp"
+        android:textColor="#F6F6F6"
         android:text="Add Symptoms"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.433"

@@ -4,14 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:background="#ebece4"
+    tools:context=".MainActivity"
+    tools:ignore="ExtraText">
 
     <Button
         android:id="@+id/heart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="184dp"
+        android:background="#FAF6F6"
         android:text="Measure Heart Rate"
+        android:textColor="#2B0808"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.453"
         app:layout_constraintStart_toStartOf="parent"

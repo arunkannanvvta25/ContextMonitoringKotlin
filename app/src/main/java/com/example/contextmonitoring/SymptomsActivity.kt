@@ -13,8 +13,8 @@ import androidx.activity.ComponentActivity
 import android.content.SharedPreferences
 import androidx.core.content.edit
 import androidx.lifecycle.ViewModelProvider
-import com.example.contextmonitoring.Db.HealthDataViewModel
-import com.example.contextmonitoring.Db.SymptomRating
+import com.example.contextmonitoring.DbUtils.HealthDataViewModel
+import com.example.contextmonitoring.DbUtils.SymptomRating
 
 class SymptomsActivity : ComponentActivity() {
     private lateinit var dropdown: Spinner

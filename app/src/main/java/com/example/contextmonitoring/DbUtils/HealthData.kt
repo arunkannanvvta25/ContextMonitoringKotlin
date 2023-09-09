@@ -1,6 +1,5 @@
-package com.example.contextmonitoring.Db
+package com.example.contextmonitoring.DbUtils
 
-import androidx.lifecycle.MutableLiveData
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 

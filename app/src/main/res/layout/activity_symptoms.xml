@@ -9,8 +9,8 @@
 
     <Spinner
         android:id="@+id/spinner"
-        android:layout_width="369dp"
-        android:layout_height="49dp"
+        android:layout_width="366dp"
+        android:layout_height="72dp"
         android:layout_marginTop="92dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -38,6 +38,7 @@
         android:padding="15dp"
         android:text="Upload"
         android:textColor="#F6F6F6"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"

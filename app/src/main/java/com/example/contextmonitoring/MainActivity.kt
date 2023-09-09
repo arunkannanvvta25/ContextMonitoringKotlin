@@ -16,16 +16,11 @@ import android.media.MediaMetadataRetriever
 import android.view.View
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
-import com.example.contextmonitoring.Db.HealthData
-import com.example.contextmonitoring.Db.HealthDataViewModel
+import com.example.contextmonitoring.DbUtils.HealthData
+import com.example.contextmonitoring.DbUtils.HealthDataViewModel
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.io.BufferedReader
 import java.io.InputStream
-import java.io.InputStreamReader
-import kotlin.math.abs
-import kotlin.math.pow
-import kotlin.math.sqrt
 
 class MainActivity : ComponentActivity() {
     lateinit var heartRateLiveData: MutableLiveData<String>
@@ -44,7 +39,7 @@ class MainActivity : ComponentActivity() {
                 val uri = result.data?.data
                 if (uri != null) {
                     var result = computeRespiratoryRate(uri)
-                    accelerometerValue=result;
+                    accelerometerValue = result;
                     var acc_val: TextView = findViewById(R.id.textviewResp)
                     acc_val.text = "Respiratory Rate is $result";
                 } else {
@@ -125,7 +120,7 @@ class MainActivity : ComponentActivity() {
 
     private fun computeRespiratoryRate(uri: Uri): Int {
         val inputStream: InputStream? = contentResolver.openInputStream(uri)
-        return RespiratoryRateComputer.compute(inputStream,uri);
+        return RespiratoryRateComputer.compute(inputStream, uri);
     }
 
     private val getHeartRateVideo =
@@ -163,7 +158,7 @@ class MainActivity : ComponentActivity() {
             val a = mutableListOf<Long>()
             for (i in frameList) {
                 redBucket = 0
-                for (y in 100 until 200) {
+                for (y in 200 until 300) {
                     for (x in 100 until 200) {
                         val c: Int = i.getPixel(x, y)
                         pixelCount++
@@ -188,7 +183,7 @@ class MainActivity : ComponentActivity() {
                 var p = b.elementAt(i.toInt())
                 val dif = p - x;
                 Log.d("Diff", dif.toString())
-                if ((p - x) > 800) {
+                if ((p - x) > 300) {
                     count = count + 1
                 }
                 x = b.elementAt(i.toInt())

@@ -1,4 +1,4 @@
-package com.example.contextmonitoring.Db
+package com.example.contextmonitoring.DbUtils
 
 
 import android.content.Context

@@ -11,9 +11,9 @@ import kotlin.math.sqrt
 class RespiratoryRateComputer {
     companion object {
         // Static-like function
-        fun compute(inputStream: InputStream?,uri: Uri):Int{
-            val rows=1280
-            val col=0
+        fun compute(inputStream: InputStream?, uri: Uri): Int {
+            val rows = 1280
+            val col = 0
             val reader = BufferedReader(InputStreamReader(inputStream))
             var line: String? = ""
             val columnData = StringBuilder()
@@ -45,7 +45,7 @@ class RespiratoryRateComputer {
             } finally {
                 reader.close()
             }
-            return (ret*30).toInt()
+            return (ret * 30).toInt()
         }
     }
 

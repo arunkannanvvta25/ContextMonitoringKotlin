@@ -36,15 +36,25 @@ class SymptomsActivity : ComponentActivity() {
         }
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_symptoms)
+        healthDatavm = ViewModelProvider(this).get(HealthDataViewModel::class.java)
         dropdown = findViewById(R.id.spinner)
         starRating = findViewById(R.id.ratingBar)
-        healthDatavm = ViewModelProvider(this).get(HealthDataViewModel::class.java)
+        starRating.onRatingBarChangeListener = RatingBar.OnRatingBarChangeListener { _, rating, _ ->
+            val symptomSelected = symptoms[dropdown.selectedItemPosition]
+            symptomSelected.rating = rating
+            sp.edit {
+                putFloat(symptomSelected.option, rating)
+                apply()
+            }
+        }
+
         val size = listOfSymptoms.size - 1
         for (i in 0..size) {
             val symptom = listOfSymptoms[i]
             val rating = sp.getFloat(symptom, 0.0f)
             symptoms.add(SymptomRating(symptom, rating))
         }
+
         val dropdownadapter =
             ArrayAdapter(this, android.R.layout.simple_spinner_item, symptoms.map { it.option })
         dropdownadapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -63,14 +73,6 @@ class SymptomsActivity : ComponentActivity() {
             override fun onNothingSelected(parentView: AdapterView<*>?) {
             }
         }
-        starRating.onRatingBarChangeListener = RatingBar.OnRatingBarChangeListener { _, rating, _ ->
-            val symptomSelected = symptoms[dropdown.selectedItemPosition]
-            symptomSelected.rating = rating
-            sp.edit {
-                putFloat(symptomSelected.option, rating)
-                apply()
-            }
-        }
         val reset = findViewById<Button>(R.id.upload)
         reset.setOnClickListener {
             var ratings = ArrayList<Float>()
@@ -81,7 +83,7 @@ class SymptomsActivity : ComponentActivity() {
             ratings.add(firstPage[1]);
             val intent = Intent(this, MainActivity::class.java)
             intent.putExtra("options", ratings)
-            val size=listOfSymptoms.size - 1
+            val size = listOfSymptoms.size - 1
             for (i in 0..size) {
                 sp.edit {
                     putFloat(listOfSymptoms[i], 0.0f)

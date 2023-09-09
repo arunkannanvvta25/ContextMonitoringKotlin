@@ -25,11 +25,11 @@ import java.io.InputStreamReader
 import kotlin.math.abs
 
 class MainActivity : ComponentActivity() {
-    lateinit var heartRateVal: MutableLiveData<String>
+    lateinit var heartRateLiveData: MutableLiveData<String>
 
     init {
-        heartRateVal = MutableLiveData()
-        heartRateVal.value = ".."
+        heartRateLiveData = MutableLiveData()
+        heartRateLiveData.value = ".."
     }
 
     private lateinit var healthDataVM: HealthDataViewModel
@@ -52,9 +52,9 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         LoadProps()
         super.onCreate(savedInstanceState)
-        heartRateVal.observe(this) { result ->
-            var tvBloodRate = findViewById<TextView>(R.id.textView)
-            tvBloodRate.text = "Heart Rate is : $result"
+        heartRateLiveData.observe(this) { result ->
+            var textView = findViewById<TextView>(R.id.textView)
+            textView.text = "Heart Rate is : $result"
         }
         setContentView(R.layout.activity_main)
         val heartRate = findViewById<Button>(R.id.heart)
@@ -66,7 +66,6 @@ class MainActivity : ComponentActivity() {
         symptomsBtn.setOnClickListener {
             navigateToSymptomsPage()
         }
-
     }
 
     private fun LoadProps() {
@@ -95,8 +94,8 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun getVideo() {
-        var tvBloodRate = findViewById<TextView>(R.id.textView)
-        tvBloodRate.text = "Loading"
+        var textView = findViewById<TextView>(R.id.textView)
+        textView.text = "Loading"
         getHeartRateVideo.launch("video/*")
     }
 
@@ -160,7 +159,7 @@ class MainActivity : ComponentActivity() {
             Log.d("URI", uri.toString())
             GlobalScope.launch {
                 val result = processVideoFrames(uri)
-                heartRateVal.postValue(result);
+                heartRateLiveData.postValue(result);
                 Log.d("final", result);
             }
         }

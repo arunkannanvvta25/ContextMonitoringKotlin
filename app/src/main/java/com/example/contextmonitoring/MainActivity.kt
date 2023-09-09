@@ -21,8 +21,11 @@ import com.example.contextmonitoring.Db.HealthDataViewModel
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.BufferedReader
+import java.io.InputStream
 import java.io.InputStreamReader
 import kotlin.math.abs
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 class MainActivity : ComponentActivity() {
     lateinit var heartRateLiveData: MutableLiveData<String>
@@ -33,16 +36,17 @@ class MainActivity : ComponentActivity() {
     }
 
     private lateinit var healthDataVM: HealthDataViewModel
-    private var accelerometerValue: Float = 0.0f
+    private var accelerometerValue: Int = 0
     private var heartRateValue: Float = 0.0f
     private val openDocumentLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val uri = result.data?.data
                 if (uri != null) {
-                    var result = computeRespiratoryRate(uri).toInt().toString();
+                    var result = computeRespiratoryRate(uri)
+                    accelerometerValue=result;
                     var acc_val: TextView = findViewById(R.id.textviewResp)
-                    acc_val.text = "Respiratory Rate is +$result";
+                    acc_val.text = "Respiratory Rate is $result";
                 } else {
                     Toast.makeText(this, "File selection canceled", Toast.LENGTH_SHORT).show()
                 }
@@ -102,7 +106,7 @@ class MainActivity : ComponentActivity() {
     private fun navigateToSymptomsPage() {
         var arraylist = ArrayList<Float>()
         arraylist.add(heartRateValue)
-        arraylist.add(accelerometerValue)
+        arraylist.add(accelerometerValue.toFloat())
         val intent = Intent(this, SymptomsActivity::class.java)
         intent.putExtra("options", arraylist)
         startActivity(intent)
@@ -119,39 +123,9 @@ class MainActivity : ComponentActivity() {
         })
     }
 
-    private fun computeRespiratoryRate(uri: Uri): Float {
-        var result = 0.00
-        try {
-            val inputStream = contentResolver.openInputStream(uri)
-            val reader = BufferedReader(InputStreamReader(inputStream))
-            var line: String?
-            while (reader.readLine().also { line = it } != null) {
-                // Split the CSV row by commas
-                val values = line?.split(",")
-                var temp = 0;
-                if (values != null) {
-                    var k = 0
-                    var previousValue: Double = 0.0
-                    for (value in values) {
-                        val currentValue: Double = value.toDouble()
-                        if (abs(currentValue - previousValue) > 0.15) {
-                            k++
-                        }
-                        previousValue = currentValue
-                        temp += 1;
-                        if (temp == 1280)
-                            break;
-                    }
-                    result = k / 45.0
-                }
-            }
-            reader.close()
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Toast.makeText(this, "Error reading CSV file", Toast.LENGTH_SHORT).show()
-        }
-        accelerometerValue = (result * 30).toFloat();
-        return accelerometerValue;
+    private fun computeRespiratoryRate(uri: Uri): Int {
+        val inputStream: InputStream? = contentResolver.openInputStream(uri)
+        return RespiratoryRateComputer.compute(inputStream,uri);
     }
 
     private val getHeartRateVideo =

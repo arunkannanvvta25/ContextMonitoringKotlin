@@ -22,11 +22,8 @@ class SymptomsActivity : ComponentActivity() {
     private val symptoms = mutableListOf<SymptomRating>()
     private var firstPage = ArrayList<Float>()
     private lateinit var sp: SharedPreferences
-    val listOfSymptoms = arrayOf(
-        "Nausea", "Headache", "Diarrhea", "Soar Throat", "Fever",
-        "Muscle Ache", "Loss of smell or taste", "Cough", "Shortness of Breath", "Feeling Tired"
-    )
-    private lateinit var healthDatavm: HealthDataViewModel
+    val listOfSymptoms = SymptomsOptions.listOfSymptoms
+    private lateinit var healthDataVm: HealthDataViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         sp = getSharedPreferences("SymptomsRatings", Context.MODE_PRIVATE)
         val intent = intent
@@ -36,7 +33,7 @@ class SymptomsActivity : ComponentActivity() {
         }
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_symptoms)
-        healthDatavm = ViewModelProvider(this).get(HealthDataViewModel::class.java)
+        healthDataVm = ViewModelProvider(this).get(HealthDataViewModel::class.java)
         dropdown = findViewById(R.id.spinner)
         starRating = findViewById(R.id.ratingBar)
         starRating.onRatingBarChangeListener = RatingBar.OnRatingBarChangeListener { _, rating, _ ->

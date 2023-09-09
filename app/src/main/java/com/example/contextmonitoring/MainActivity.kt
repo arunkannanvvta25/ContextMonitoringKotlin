@@ -39,15 +39,15 @@ class MainActivity : ComponentActivity() {
     }
     private lateinit var medicalDataViewModal: HealthDataViewModel
     private var accelerometerValue:Float=0.0f
-    private var heartRateValue:String=""
+    private var heartRateValue:Float=0.0f
     private val openDocumentLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val uri = result.data?.data
                 if (uri != null) {
                     var result = readAndPrintCSV(uri).toString();
-                    var acc_val: TextView=findViewById(R.id.resp)
-                    acc_val.text=result.toString();
+                    var acc_val: TextView=findViewById(R.id.textviewResp)
+                    acc_val.text= "Respiratory Rate is +$result";
                 } else {
                     Toast.makeText(this, "File selection canceled", Toast.LENGTH_SHORT).show()
                 }
@@ -57,13 +57,11 @@ class MainActivity : ComponentActivity() {
         val intent = intent // Get the Intent passed to this activity
         if (intent != null && intent.hasExtra("options")) {
             val optionsList = intent.getSerializableExtra("options") as ArrayList<Float>
-            Log.d("Options-Ratings",optionsList.toString())
-            Log.d("Heart Measure: ", heartRateValue)
-            Log.d("Heart Val:", heartRateVal.value.toString())
+
 //           Save data to DB upon pressing Upload from Dropdown screen
             medicalDataViewModal = ViewModelProvider(this).get(HealthDataViewModel::class.java)
             val newEntry = HealthData(0, optionsList[0], optionsList[1],optionsList[2],optionsList[3],optionsList[4],
-                optionsList[5],optionsList[6],optionsList[7],optionsList[8],optionsList[9],heartRateValue,accelerometerValue)
+                optionsList[5],optionsList[6],optionsList[7],optionsList[8],optionsList[9],optionsList[10],optionsList[11])
             medicalDataViewModal.insert(newEntry)
 
             Toast.makeText(this, "saved successfully", Toast.LENGTH_SHORT).show()
@@ -84,9 +82,14 @@ class MainActivity : ComponentActivity() {
         })
         val symptomsBtn = findViewById<Button>(R.id.symptoms)
         symptomsBtn.setOnClickListener {
-            val intent = Intent(this, SymptomsActivity::class.java)
+            var arraylist = ArrayList<Float>()
+            arraylist.add(heartRateValue)
+            arraylist.add(accelerometerValue)
+            val intent= Intent(this,SymptomsActivity::class.java)
+            intent.putExtra("options",arraylist)
             startActivity(intent)
         }
+
     }
     private fun readAndPrintCSV(uri: Uri): Float {
         var result=0.00
@@ -119,7 +122,8 @@ class MainActivity : ComponentActivity() {
             e.printStackTrace()
             Toast.makeText(this, "Error reading CSV file", Toast.LENGTH_SHORT).show()
         }
-        return (result * 30).toFloat();
+        accelerometerValue=( result*30).toFloat();
+        return accelerometerValue;
     }
 
     private val getContent =
@@ -138,7 +142,6 @@ class MainActivity : ComponentActivity() {
         var frameList = ArrayList<Bitmap>()
         try {
             retriever.setDataSource(this, videoUri)
-
             // Calculate the total duration of the video in microseconds.
             val duration =
                 retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)?.toLong()
@@ -183,29 +186,29 @@ class MainActivity : ComponentActivity() {
                 var p = b.elementAt(i.toInt())
                 val dif = p - x;
                 Log.d("Diff", dif.toString())
-                if ((p - x) > 1000) {
+                if ((p - x) > 800) {
                     count = count + 1
                 }
                 x = b.elementAt(i.toInt())
             }
             var rate = ((count.toFloat() / 45) * 60).toInt()
-            val temp = (rate / 2).toString();
-            Log.d("Answer:", temp)
-            heartRateValue=temp
+            val temp = (rate / 2);
+            heartRateValue=temp.toFloat();
             return temp.toString()
-
         }
     }
 
     private fun openFilePicker() {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
             addCategory(Intent.CATEGORY_OPENABLE)
-            type = "*/*" // Filter for CSV files
+            type = "*/*"
         }
         openDocumentLauncher.launch(intent)
     }
 
     private fun openVideoPicker() {
+        var tvBloodRate = findViewById<TextView>(R.id.textView)
+        tvBloodRate.text = "Loading"
         getContent.launch("video/*")
     }
 }

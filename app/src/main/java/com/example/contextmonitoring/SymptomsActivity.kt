@@ -11,6 +11,7 @@ import android.widget.RatingBar
 import android.widget.Spinner
 import androidx.activity.ComponentActivity
 import android.content.SharedPreferences
+import android.util.Log
 import android.widget.Toast
 import androidx.core.content.edit
 import androidx.lifecycle.ViewModelProvider
@@ -20,16 +21,22 @@ class SymptomsActivity : ComponentActivity() {
     private lateinit var dropdown: Spinner
     private lateinit var starRating: RatingBar
     private val symptoms = mutableListOf<SymptomRating>()
+    private var firstPage=ArrayList<Float>()
     private lateinit var sharedPreferences: SharedPreferences
     val listOfSymptoms = arrayOf("Nausea","Headache","Diarrhea","Soar Throat","Fever",
         "Muscle Ache","Loss of smell or taste","Cough","Shortness of Breath","Feeling Tired")
     private lateinit var medicalDataViewModal: HealthDataViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
+        sharedPreferences = getSharedPreferences("SymptomsRatings", Context.MODE_PRIVATE)
+        val intent = intent // Get the Intent passed to this activity
+        if (intent != null && intent.hasExtra("options")) {
+            val optionsList = intent.getSerializableExtra("options") as ArrayList<Float>
+            firstPage=optionsList;
+        }
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_symptoms)
         dropdown = findViewById(R.id.spinner)
         starRating = findViewById(R.id.ratingBar)
-        sharedPreferences = getSharedPreferences("SymptomsRatings", Context.MODE_PRIVATE)
         medicalDataViewModal = ViewModelProvider(this).get(HealthDataViewModel::class.java)
 
         // Create 10 options and add them to the list
@@ -76,6 +83,8 @@ class SymptomsActivity : ComponentActivity() {
             for (i in 1..10){
                 arraylist.add(symptoms[i-1].rating)
             }
+            arraylist.add(firstPage[0]);
+            arraylist.add(firstPage[1]);
             val intent= Intent(this,MainActivity::class.java)
             intent.putExtra("options",arraylist)
             startActivity(intent)

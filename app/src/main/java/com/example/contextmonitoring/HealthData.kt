@@ -16,7 +16,7 @@ val smell_loss_rating: Float,
 val cough_rating: Float,
 val breath_rating: Float,
 val tiredness_rating: Float,
-val heart_rate: String,
+val heart_rate: Float,
 val acclerometer: Float
 ) {
     override fun toString(): String {

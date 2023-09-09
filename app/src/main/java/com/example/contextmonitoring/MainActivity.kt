@@ -1,35 +1,28 @@
 package com.example.contextmonitoring
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import androidx.activity.ComponentActivity
-import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.net.Uri
 import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
-import android.widget.VideoView
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import android.graphics.Color
 import android.media.MediaMetadataRetriever
-import android.os.Build
 import android.view.View
-import androidx.core.content.edit
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
+import com.example.contextmonitoring.Db.HealthData
+import com.example.contextmonitoring.Db.HealthDataViewModel
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.BufferedReader
-import java.io.InputStream
 import java.io.InputStreamReader
 import kotlin.math.abs
-import kotlin.math.pow
-import kotlin.math.sqrt
 
 class MainActivity : ComponentActivity() {
     lateinit var heartRateVal: MutableLiveData<String>
@@ -47,7 +40,7 @@ class MainActivity : ComponentActivity() {
             if (result.resultCode == Activity.RESULT_OK) {
                 val uri = result.data?.data
                 if (uri != null) {
-                    var result = computeRespiratoryRate(uri).toString();
+                    var result = computeRespiratoryRate(uri).toInt().toString();
                     var acc_val: TextView = findViewById(R.id.textviewResp)
                     acc_val.text = "Respiratory Rate is +$result";
                 } else {
@@ -79,26 +72,25 @@ class MainActivity : ComponentActivity() {
     private fun LoadProps() {
         val intent = intent
         if (intent != null && intent.hasExtra("options")) {
-            val optionsList = intent.getSerializableExtra("options") as ArrayList<Float>
+            val columns = intent.getSerializableExtra("options") as ArrayList<Float>
             healthDataVM = ViewModelProvider(this).get(HealthDataViewModel::class.java)
-            val newEntry = HealthData(
+            val row = HealthData(
                 0,
-                optionsList[0],
-                optionsList[1],
-                optionsList[2],
-                optionsList[3],
-                optionsList[4],
-                optionsList[5],
-                optionsList[6],
-                optionsList[7],
-                optionsList[8],
-                optionsList[9],
-                optionsList[10].toString(),
-                optionsList[11].toInt()
+                columns[0],
+                columns[1],
+                columns[2],
+                columns[3],
+                columns[4],
+                columns[5],
+                columns[6],
+                columns[7],
+                columns[8],
+                columns[9],
+                columns[10].toString(),
+                columns[11].toInt()
             )
-            healthDataVM.insert(newEntry)
-
-            Toast.makeText(this, "saved successfully", Toast.LENGTH_SHORT).show()
+            healthDataVM.insert(row)
+            Toast.makeText(this, "Uploaded", Toast.LENGTH_SHORT).show()
         }
     }
 

@@ -11,11 +11,10 @@ import android.widget.RatingBar
 import android.widget.Spinner
 import androidx.activity.ComponentActivity
 import android.content.SharedPreferences
-import android.util.Log
-import android.widget.Toast
 import androidx.core.content.edit
 import androidx.lifecycle.ViewModelProvider
-import com.example.med_app.SymptomRating
+import com.example.contextmonitoring.Db.HealthDataViewModel
+import com.example.contextmonitoring.Db.SymptomRating
 
 class SymptomsActivity : ComponentActivity() {
     private lateinit var dropdown: Spinner
@@ -39,7 +38,7 @@ class SymptomsActivity : ComponentActivity() {
         setContentView(R.layout.activity_symptoms)
         dropdown = findViewById(R.id.spinner)
         starRating = findViewById(R.id.ratingBar)
-        healthDatavm = ViewModelProvider(this).get(HealthDataViewModel::class.java)        
+        healthDatavm = ViewModelProvider(this).get(HealthDataViewModel::class.java)
         val size = listOfSymptoms.size - 1
         for (i in 0..size) {
             val symptom = listOfSymptoms[i]
@@ -72,17 +71,8 @@ class SymptomsActivity : ComponentActivity() {
                 apply()
             }
         }
-        val second = findViewById<Button>(R.id.go_back)
-        second.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
-        }
         val reset = findViewById<Button>(R.id.upload)
         reset.setOnClickListener {
-            val size=listOfSymptoms.size - 1
-            for (i in 0..size) {
-                val optionName = listOfSymptoms[i]
-            }
             var ratings = ArrayList<Float>()
             for (i in 1..10) {
                 ratings.add(symptoms[i - 1].rating)
@@ -91,7 +81,13 @@ class SymptomsActivity : ComponentActivity() {
             ratings.add(firstPage[1]);
             val intent = Intent(this, MainActivity::class.java)
             intent.putExtra("options", ratings)
-            sp.edit().clear()
+            val size=listOfSymptoms.size - 1
+            for (i in 0..size) {
+                sp.edit {
+                    putFloat(listOfSymptoms[i], 0.0f)
+                    apply()
+                }
+            }
             startActivity(intent)
         }
     }

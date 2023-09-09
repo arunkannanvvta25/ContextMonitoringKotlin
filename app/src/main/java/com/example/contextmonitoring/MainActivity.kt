@@ -93,8 +93,8 @@ class MainActivity : ComponentActivity() {
                 optionsList[7],
                 optionsList[8],
                 optionsList[9],
-                optionsList[10],
-                optionsList[11]
+                optionsList[10].toString(),
+                optionsList[11].toInt()
             )
             healthDataVM.insert(newEntry)
 

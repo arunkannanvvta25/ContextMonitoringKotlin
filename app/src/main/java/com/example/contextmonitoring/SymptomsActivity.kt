@@ -21,72 +21,77 @@ class SymptomsActivity : ComponentActivity() {
     private lateinit var dropdown: Spinner
     private lateinit var starRating: RatingBar
     private val symptoms = mutableListOf<SymptomRating>()
-    private var firstPage=ArrayList<Float>()
-    private lateinit var sharedPreferences: SharedPreferences
-    val listOfSymptoms = arrayOf("Nausea","Headache","Diarrhea","Soar Throat","Fever",
-        "Muscle Ache","Loss of smell or taste","Cough","Shortness of Breath","Feeling Tired")
-    private lateinit var medicalDataViewModal: HealthDataViewModel
+    private var firstPage = ArrayList<Float>()
+    private lateinit var sp: SharedPreferences
+    val listOfSymptoms = arrayOf(
+        "Nausea", "Headache", "Diarrhea", "Soar Throat", "Fever",
+        "Muscle Ache", "Loss of smell or taste", "Cough", "Shortness of Breath", "Feeling Tired"
+    )
+    private lateinit var healthDatavm: HealthDataViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
-        sharedPreferences = getSharedPreferences("SymptomsRatings", Context.MODE_PRIVATE)
-        val intent = intent // Get the Intent passed to this activity
+        sp = getSharedPreferences("SymptomsRatings", Context.MODE_PRIVATE)
+        val intent = intent
         if (intent != null && intent.hasExtra("options")) {
             val optionsList = intent.getSerializableExtra("options") as ArrayList<Float>
-            firstPage=optionsList;
+            firstPage = optionsList;
         }
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_symptoms)
         dropdown = findViewById(R.id.spinner)
         starRating = findViewById(R.id.ratingBar)
-        medicalDataViewModal = ViewModelProvider(this).get(HealthDataViewModel::class.java)
-
-        // Create 10 options and add them to the list
-        val size=listOfSymptoms.size-1
+        healthDatavm = ViewModelProvider(this).get(HealthDataViewModel::class.java)        
+        val size = listOfSymptoms.size - 1
         for (i in 0..size) {
             val symptom = listOfSymptoms[i]
-            val rating = sharedPreferences.getFloat(symptom, 0.0f)
+            val rating = sp.getFloat(symptom, 0.0f)
             symptoms.add(SymptomRating(symptom, rating))
         }
-        val dropdownadapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, symptoms.map { it.option })
+        val dropdownadapter =
+            ArrayAdapter(this, android.R.layout.simple_spinner_item, symptoms.map { it.option })
         dropdownadapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         dropdown.adapter = dropdownadapter
         dropdown.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parentView: AdapterView<*>?, selectedItemView: View?, position: Int, id: Long) {
-                val selectedOption = symptoms[position]
-                starRating.rating = selectedOption.rating
+            override fun onItemSelected(
+                parentView: AdapterView<*>?,
+                selectedItemView: View?,
+                position: Int,
+                id: Long
+            ) {
+                val symptomSelected = symptoms[position]
+                starRating.rating = symptomSelected.rating
             }
+
             override fun onNothingSelected(parentView: AdapterView<*>?) {
             }
         }
         starRating.onRatingBarChangeListener = RatingBar.OnRatingBarChangeListener { _, rating, _ ->
-            val selectedOption = symptoms[dropdown.selectedItemPosition]
-            selectedOption.rating = rating
-            sharedPreferences.edit {
-                putFloat(selectedOption.option, rating)
+            val symptomSelected = symptoms[dropdown.selectedItemPosition]
+            symptomSelected.rating = rating
+            sp.edit {
+                putFloat(symptomSelected.option, rating)
                 apply()
             }
         }
-        val second=findViewById<Button>(R.id.go_back)
-        second.setOnClickListener{
-            val intent= Intent(this,MainActivity::class.java)
+        val second = findViewById<Button>(R.id.go_back)
+        second.setOnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }
-        val reset=findViewById<Button>(R.id.upload)
+        val reset = findViewById<Button>(R.id.upload)
         reset.setOnClickListener {
-            for (i in 0..listOfSymptoms.size-1) {
+            val size=listOfSymptoms.size - 1
+            for (i in 0..size) {
                 val optionName = listOfSymptoms[i]
-                sharedPreferences.edit {
-                    putFloat(optionName, 0.0f)
-                    apply()
-                }
             }
-            var arraylist = ArrayList<Float>()
-            for (i in 1..10){
-                arraylist.add(symptoms[i-1].rating)
+            var ratings = ArrayList<Float>()
+            for (i in 1..10) {
+                ratings.add(symptoms[i - 1].rating)
             }
-            arraylist.add(firstPage[0]);
-            arraylist.add(firstPage[1]);
-            val intent= Intent(this,MainActivity::class.java)
-            intent.putExtra("options",arraylist)
+            ratings.add(firstPage[0]);
+            ratings.add(firstPage[1]);
+            val intent = Intent(this, MainActivity::class.java)
+            intent.putExtra("options", ratings)
+            sp.edit().clear()
             startActivity(intent)
         }
     }

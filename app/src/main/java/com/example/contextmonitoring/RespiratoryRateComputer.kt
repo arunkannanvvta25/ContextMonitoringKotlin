@@ -10,7 +10,6 @@ import kotlin.math.sqrt
 
 class RespiratoryRateComputer {
     companion object {
-        // Static-like function
         fun compute(inputStream: InputStream?, uri: Uri): Int {
             val rows = 1280
             val col = 0

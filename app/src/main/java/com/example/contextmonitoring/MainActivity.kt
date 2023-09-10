@@ -126,14 +126,19 @@ class MainActivity : ComponentActivity() {
     private val getHeartRateVideo =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
             Log.d("URI", uri.toString())
-            GlobalScope.launch {
-                val result = processVideoFrames(uri)
-                heartRateLiveData.postValue(result);
-                Log.d("final", result);
+            if(uri!=null){
+                GlobalScope.launch {
+                    val result = getHeartRateFromVideo(uri)
+                    heartRateLiveData.postValue(result);
+                    Log.d("final", result);
+                }
+            }
+            else{
+                Toast.makeText(this, "File selection canceled", Toast.LENGTH_SHORT).show()
             }
         }
 
-    private suspend fun processVideoFrames(videoUri: Uri?): String {
+    private suspend fun getHeartRateFromVideo(videoUri: Uri?): String {
 
         val retriever = MediaMetadataRetriever()
         var frameList = ArrayList<Bitmap>()

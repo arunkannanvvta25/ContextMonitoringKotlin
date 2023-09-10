@@ -15,7 +15,7 @@ class HealthDataViewModel(application: Application): AndroidViewModel(applicatio
     private val repository: HealthDataRepository
 
     init {
-        val keyValueStoreDao = HealthDataDb.getDatabase(application).dataDao()
+        val keyValueStoreDao = HealthDataDb.getDb(application).dataDao()
         repository = HealthDataRepository(keyValueStoreDao)
         readAllData = repository.readAllData
     }

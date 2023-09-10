@@ -14,7 +14,6 @@ import android.content.SharedPreferences
 import androidx.core.content.edit
 import androidx.lifecycle.ViewModelProvider
 import com.example.contextmonitoring.DbUtils.HealthDataViewModel
-import com.example.contextmonitoring.DbUtils.SymptomRating
 
 class SymptomsActivity : ComponentActivity() {
     private lateinit var dropdown: Spinner
@@ -51,27 +50,8 @@ class SymptomsActivity : ComponentActivity() {
             val rating = sp.getFloat(symptom, 0.0f)
             symptoms.add(SymptomRating(symptom, rating))
         }
-
-        val dropdownadapter =
-            ArrayAdapter(this, android.R.layout.simple_spinner_item, symptoms.map { it.option })
-        dropdownadapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        dropdown.adapter = dropdownadapter
-        dropdown.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parentView: AdapterView<*>?,
-                selectedItemView: View?,
-                position: Int,
-                id: Long
-            ) {
-                val symptomSelected = symptoms[position]
-                starRating.rating = symptomSelected.rating
-            }
-
-            override fun onNothingSelected(parentView: AdapterView<*>?) {
-            }
-        }
-        val reset = findViewById<Button>(R.id.upload)
-        reset.setOnClickListener {
+        val uploadbtn = findViewById<Button>(R.id.upload)
+        uploadbtn.setOnClickListener {
             var ratings = ArrayList<Float>()
             for (i in 1..10) {
                 ratings.add(symptoms[i - 1].rating)
@@ -88,6 +68,20 @@ class SymptomsActivity : ComponentActivity() {
                 }
             }
             startActivity(intent)
+        }
+
+        val dropdownadapter =
+            ArrayAdapter(this, android.R.layout.simple_spinner_item, symptoms.map { it.option })
+        dropdownadapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        dropdown.adapter = dropdownadapter
+        dropdown.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parentView: AdapterView<*>?,selectedItemView: View?,position: Int,id: Long
+            ) {
+                val symptomSelected = symptoms[position]
+                starRating.rating = symptomSelected.rating
+            }
+            override fun onNothingSelected(parentView: AdapterView<*>?) {
+            }
         }
     }
 }

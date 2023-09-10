@@ -8,10 +8,11 @@ import androidx.room.Query
 
 @Dao
 interface iHealthData {
+    @Query(value = "SELECT * FROM health_data ORDER BY ID DESC")
+    fun readAllData(): LiveData<List<HealthData>>
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(row: HealthData)
 
-    @Query(value = "SELECT * FROM health_data ORDER BY ID DESC")
-    fun readAllData(): LiveData<List<HealthData>>
+
 
 }
